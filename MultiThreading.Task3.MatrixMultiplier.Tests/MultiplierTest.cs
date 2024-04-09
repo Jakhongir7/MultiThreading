@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MultiThreading.Task3.MatrixMultiplier.Matrices;
 using MultiThreading.Task3.MatrixMultiplier.Multipliers;
@@ -20,6 +21,41 @@ namespace MultiThreading.Task3.MatrixMultiplier.Tests
         {
             // todo: implement a test method to check the size of the matrix which makes parallel multiplication more effective than
             // todo: the regular one
+            const int minSize = 50; // Minimum size of the matrix
+            const int maxSize = 150; // Maximum size of the matrix
+            const int step = 20; // Step size for increasing matrix size
+            const int iterations = 3; // Number of iterations for each matrix size
+
+            Console.WriteLine("Testing efficiency...");
+
+            for (int size = minSize; size <= maxSize; size += step)
+            {
+                double syncAverageTime = 0;
+                double parallelAverageTime = 0;
+
+                for (int i = 0; i < iterations; i++)
+                {
+                    var matrix1 = new Matrix(size, size, randomInit: true);
+                    var matrix2 = new Matrix(size, size, randomInit: true);
+
+                    var stopwatch = Stopwatch.StartNew();
+                    IMatrix syncResult = new MatricesMultiplier().Multiply(matrix1, matrix2);
+                    stopwatch.Stop();
+                    syncAverageTime += stopwatch.Elapsed.TotalMilliseconds;
+
+                    stopwatch = Stopwatch.StartNew();
+                    IMatrix parallelResult = new MatricesMultiplierParallel().Multiply(matrix1, matrix2);
+                    stopwatch.Stop();
+                    parallelAverageTime += stopwatch.Elapsed.TotalMilliseconds;
+                }
+
+                syncAverageTime /= iterations;
+                parallelAverageTime /= iterations;
+
+                Console.WriteLine($"Matrix Size: {size}x{size}, Sync Avg Time: {syncAverageTime} ms, Parallel Avg Time: {parallelAverageTime} ms");
+
+                Assert.IsTrue(syncAverageTime >= parallelAverageTime, "Parallel multiplication should be faster.");
+            }
         }
 
         #region private methods

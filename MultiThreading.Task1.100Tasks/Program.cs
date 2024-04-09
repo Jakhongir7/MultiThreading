@@ -4,6 +4,7 @@
  * “Task #0 – {iteration number}”.
  */
 using System;
+using System.Threading.Tasks;
 
 namespace MultiThreading.Task1._100Tasks
 {
@@ -27,12 +28,29 @@ namespace MultiThreading.Task1._100Tasks
 
         static void HundredTasks()
         {
-            // feel free to add your code here
+            // Create an array of 100 Tasks
+            Task[] tasks = new Task[100];
+
+            // Populate the array with Tasks
+            for (int i = 0; i < tasks.Length; i++)
+            {
+                int taskNumber = i; // Capturing the loop variable for the task delegate
+                tasks[i] = Task.Run(() => TaskMethod(taskNumber));
+            }
+
+            // Wait for all tasks to complete
+            Task.WaitAll(tasks);
+
+            Console.WriteLine("All tasks completed.");
         }
 
-        static void Output(int taskNumber, int iterationNumber)
+        static void TaskMethod(int taskNumber)
         {
-            Console.WriteLine($"Task #{taskNumber} – {iterationNumber}");
+            // Iterate from 1 to 1000 and print the string
+            for (int i = 1; i <= 1000; i++)
+            {
+                Console.WriteLine($"Task #{taskNumber} - {i}");
+            }
         }
     }
 }

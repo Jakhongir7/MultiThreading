@@ -27,7 +27,7 @@ namespace MultiThreading.Task2.Chaining
             var firstTask = Task.Run(() =>
             {
                 Random random = new Random();
-                int[] randomArray = Enumerable.Range(1, 10).Select(_ => random.Next(1, 101)).ToArray();
+                int[] randomArray = Enumerable.Range(1, 10).Select(_ => random.Next(1, 11)).ToArray();
                 Console.WriteLine("Generated Array:");
                 PrintArray(randomArray);
                 return randomArray;
